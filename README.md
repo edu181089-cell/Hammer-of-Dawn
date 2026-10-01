@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # 🔨 Hammer of Dawn — NFL Pick'em Analytics Model
 
 > *In Gears of War, the Hammer of Dawn was the only weapon powerful enough 
@@ -82,3 +83,7 @@ Built as a portfolio project while learning Python, SQL, and data analysis.
 Part of a career transition into data analytics.
 
 *GitHub: [github.com/edu181089-cell](https://github.com/edu181089-cell)*
+=======
+# Hammer-of-Dawn
+NFL pick'em prediction model — data beats gut instinct (mostly)
+>>>>>>> f241fd9549b5a5dcc03305d622106c44cda73249
