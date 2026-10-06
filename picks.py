@@ -131,7 +131,7 @@ def predict_game(home_team, away_team, spread, public_pct_home,
     }
 
 # -------------------------
-# WEEK 3 MATCHUPS
+# WEEK 4 MATCHUPS
 # Injury adjustments:
 # home_qb_adj: positive helps home, negative hurts home
 # away_qb_adj: positive helps away, negative hurts away
@@ -140,61 +140,62 @@ def predict_game(home_team, away_team, spread, public_pct_home,
 matchups = [
     # (home_team, away_team, spread, public_pct_home, home_qb_adj, away_qb_adj, home_skill_adj, away_skill_adj)
 
-    # TNF
-    ('Green Bay Packers', 'Atlanta Falcons', -5.5, 77.83,
-     0, -3, 0, 0),   # Penix returning from ACL, rusty
-
-    # Sunday 12pm
-    ('Buffalo Bills', 'Los Angeles Chargers', -7.0, 84.82,
+    
+   # TNF
+    ('Cleveland Browns', 'Pittsburgh Steelers', 2.5, 43.12,
      0, 0, 0, 0),
 
-    ('Cleveland Browns', 'Carolina Panthers', 2.5, 24.02,
+    # Sunday early
+    ('Washington Commanders', 'Indianapolis Colts', 3.5, 56.09,
      0, 0, 0, 0),
 
-    ('Detroit Lions', 'New York Jets', -6.5, 73.43,
+    ('Buffalo Bills', 'New England Patriots', -6.5, 80.32,
      0, 0, 0, 0),
 
-    ('Indianapolis Colts', 'Houston Texans', 2.5, 57.91,
+    ('Chicago Bears', 'New York Jets', -3.5, 74.2,
+     -3, 0, 0, 0),    # Caleb Williams uncertain
+
+    ('Cincinnati Bengals', 'Jacksonville Jaguars', -2.5, 45.14,
      0, 0, 0, 0),
 
-    ('Miami Dolphins', 'Kansas City Chiefs', 11.5, 23.27,
+    ('New York Giants', 'Arizona Cardinals', 1.5, 54.47,
+     -5, 0, 0, 0),    # Winston still starting
+
+    ('Philadelphia Eagles', 'Los Angeles Rams', 3.0, 35.72,
      0, 0, 0, 0),
 
-    ('New York Giants', 'Tennessee Titans', -2.5, 40.59,
-     -5, 0, 0, 0),   # Winston replacing Dart indefinitely
+    ('Tampa Bay Buccaneers', 'Green Bay Packers', 3.5, 44.92,
+     -7, 0, 0, 2),    # Mayfield OUT, Packers improved O-line
 
-    ('Pittsburgh Steelers', 'Cincinnati Bengals', 3.5, 26.37,
+    ('Baltimore Ravens', 'Tennessee Titans', -11.5, 66.53,
+     0, 0, 0, 0),     # Large spread penalty applies
+
+    ('Houston Texans', 'Dallas Cowboys', -2.5, 37.89,
      0, 0, 0, 0),
 
-    ('Washington Commanders', 'Seattle Seahawks', 7.0, 15.76,
+    ('Minnesota Vikings', 'Miami Dolphins', -10.5, 68.05,
+     0, 0, 0, 0),     # Murray back healthy, large spread penalty applies
+
+    ('Las Vegas Raiders', 'Kansas City Chiefs', 4.5, 44.35,
      0, 0, 0, 0),
 
-    ('Jacksonville Jaguars', 'New England Patriots', -3.0, 51.91,
+    ('San Francisco 49ers', 'Denver Broncos', -2.5, 75.7,
      0, 0, 0, 0),
 
-    ('San Francisco 49ers', 'Arizona Cardinals', -8.5, 79.2,
-     0, -6, 0, 0),   # Murray gone, unknown backup
-
-    ('Tampa Bay Buccaneers', 'Minnesota Vikings', 1.5, 45.24,
-     0, 0, 0, 0),    # Murray healthy with Vikings now
-
-    # Sunday 3:25pm
-    ('Dallas Cowboys', 'Baltimore Ravens', 3.5, 52.08,
-     0, 0, 0, 0),    # Lamar healthy
-
-    ('New Orleans Saints', 'Las Vegas Raiders', -3.0, 62.94,
+    ('Seattle Seahawks', 'Los Angeles Chargers', -7.0, 66.52,
      0, 0, 0, 0),
 
-    ('Denver Broncos', 'Los Angeles Rams', 2.5, 37.7,
+    # SNF
+    ('Carolina Panthers', 'Detroit Lions', 3.5, 30.77,
      0, 0, 0, 0),
 
     # MNF
-    ('Chicago Bears', 'Philadelphia Eagles', 4.5, 22.33,
-     -6, 0, 0, 0),   # Keenum starting, significant downgrade
+    ('New Orleans Saints', 'Atlanta Falcons', -2.5, 67.35,
+     0, 0, 0, 0),
 ]
 
 print('=' * 65)
-print('NFL WEEK 3 2026 — MODEL PICKS (with injury adjustments)')
+print('NFL WEEK 4 2026 — MODEL PICKS (with injury adjustments)')
 print('=' * 65)
 
 results = []

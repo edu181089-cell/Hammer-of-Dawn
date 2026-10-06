@@ -164,6 +164,8 @@ if __name__ == '__main__':
     print('\nGrading Week 3...')
     grade_week(3, 2026)
 
+    print('\nGrading Week 4...')
+    grade_week(4, 2026)
     # Show running record
     show_record()
 

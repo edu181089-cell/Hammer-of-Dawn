@@ -71,11 +71,13 @@ for week in range(1, 19):
     total += stored
 print(f"2025 season: {total} games total")
 
-# Fetch 2026 current season weeks 1 and 2
+# Fetch 2026 current season - all available weeks
 print("\nFetching 2026 season...")
 total = 0
-for week in range(1, 3):
+for week in range(1, 19):
     events = fetch_week(2026, week)
+    if not events or stored == 0:
+        break
     stored = store_games(events, 2026)
     print(f"  Week {week}: {stored} games stored")
     total += stored
