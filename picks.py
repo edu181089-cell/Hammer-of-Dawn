@@ -131,71 +131,66 @@ def predict_game(home_team, away_team, spread, public_pct_home,
     }
 
 # -------------------------
-# WEEK 4 MATCHUPS
+# WEEK 5 MATCHUPS
 # Injury adjustments:
 # home_qb_adj: positive helps home, negative hurts home
 # away_qb_adj: positive helps away, negative hurts away
 # Typical values: starter out = -7 to -9, limited = -3, questionable = -1
 # -------------------------
 matchups = [
-    # (home_team, away_team, spread, public_pct_home, home_qb_adj, away_qb_adj, home_skill_adj, away_skill_adj)
+    # TNF
+    ('Dallas Cowboys', 'Tampa Bay Buccaneers', -8.5, 33.41,
+     0, -7, 0, 0),    # Mayfield OUT
 
-    
-   # TNF
-    ('Cleveland Browns', 'Pittsburgh Steelers', 2.5, 43.12,
+    # Sunday London
+    ('Jacksonville Jaguars', 'Philadelphia Eagles', -7.5, 52.04,
+     0, -1, 0, 0),    # Eagles OL retirement
+
+    # Sunday 12pm
+    ('Green Bay Packers', 'Chicago Bears', 2.5, 36.02,
+     0, -9, 0, 0),    # Caleb Williams OUT — massive adjustment
+
+    ('Tennessee Titans', 'Houston Texans', 7.5, 43.35,
      0, 0, 0, 0),
 
-    # Sunday early
-    ('Washington Commanders', 'Indianapolis Colts', 3.5, 56.09,
+    ('Miami Dolphins', 'Cincinnati Bengals', 7.5, 30.46,
      0, 0, 0, 0),
 
-    ('Buffalo Bills', 'New England Patriots', -6.5, 80.32,
+    ('New England Patriots', 'Las Vegas Raiders', -3.5, 46.66,
      0, 0, 0, 0),
 
-    ('Chicago Bears', 'New York Jets', -3.5, 74.2,
-     -3, 0, 0, 0),    # Caleb Williams uncertain
-
-    ('Cincinnati Bengals', 'Jacksonville Jaguars', -2.5, 45.14,
+    ('New Orleans Saints', 'Minnesota Vikings', 1.5, 36.17,
      0, 0, 0, 0),
 
-    ('New York Giants', 'Arizona Cardinals', 1.5, 54.47,
-     -5, 0, 0, 0),    # Winston still starting
-
-    ('Philadelphia Eagles', 'Los Angeles Rams', 3.0, 35.72,
+    ('New York Jets', 'Cleveland Browns', -2.5, 28.33,
      0, 0, 0, 0),
 
-    ('Tampa Bay Buccaneers', 'Green Bay Packers', 3.5, 44.92,
-     -7, 0, 0, 2),    # Mayfield OUT, Packers improved O-line
-
-    ('Baltimore Ravens', 'Tennessee Titans', -11.5, 66.53,
-     0, 0, 0, 0),     # Large spread penalty applies
-
-    ('Houston Texans', 'Dallas Cowboys', -2.5, 37.89,
+    ('Pittsburgh Steelers', 'Indianapolis Colts', -2.5, 51.71,
      0, 0, 0, 0),
 
-    ('Minnesota Vikings', 'Miami Dolphins', -10.5, 68.05,
-     0, 0, 0, 0),     # Murray back healthy, large spread penalty applies
+    ('Washington Commanders', 'New York Giants', -3.5, 32.67,
+     -3, -5, 0, 0),   # Daniels unknown + Winston starting
 
-    ('Las Vegas Raiders', 'Kansas City Chiefs', 4.5, 44.35,
+    ('Los Angeles Chargers', 'Denver Broncos', 3.5, 34.03,
      0, 0, 0, 0),
 
-    ('San Francisco 49ers', 'Denver Broncos', -2.5, 75.7,
+    ('Arizona Cardinals', 'Detroit Lions', 5.5, 33.0,
      0, 0, 0, 0),
 
-    ('Seattle Seahawks', 'Los Angeles Chargers', -7.0, 66.52,
+    # Sunday 3:25pm
+    ('Seattle Seahawks', 'San Francisco 49ers', -3.0, 39.0,
      0, 0, 0, 0),
 
-    # SNF
-    ('Carolina Panthers', 'Detroit Lions', 3.5, 30.77,
-     0, 0, 0, 0),
+    ('Atlanta Falcons', 'Baltimore Ravens', -3.5, 56.0,
+     0, -6, 0, 0),    # Lamar leaning out
 
     # MNF
-    ('New Orleans Saints', 'Atlanta Falcons', -2.5, 67.35,
+    ('Los Angeles Rams', 'Buffalo Bills', -3.0, 36.02,
      0, 0, 0, 0),
 ]
 
 print('=' * 65)
-print('NFL WEEK 4 2026 — MODEL PICKS (with injury adjustments)')
+print('NFL WEEK 5 2026 — MODEL PICKS (with injury adjustments)')
 print('=' * 65)
 
 results = []
@@ -222,7 +217,7 @@ for m in matchups:
     print(f"  ✅ PICK: {r['pick']} | Confidence: {r['confidence']}%{flag}")
 
 print('\n' + '=' * 65)
-print('SUMMARY — MODEL PICKS WEEK 3')
+print('SUMMARY — MODEL PICKS WEEK 5')
 print('=' * 65)
 for r in results:
     print(f"  {r['pick']}")
