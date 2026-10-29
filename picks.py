@@ -2,6 +2,9 @@ import sqlite3
 import pandas as pd
 import os
 
+WEEK = 7
+SEASON = 2026
+
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(os.path.join(BASE_DIR, 'nfl_pickem.sqlite'))
 
@@ -94,8 +97,11 @@ def predict_game(home_team, away_team, spread, public_pct_home,
         fade_adjustment = 1.0
     predicted_margin += fade_adjustment
 
-    # Compare to spread
-    margin_vs_spread = predicted_margin - (-spread)
+       # Blend the model with the market line and cap extreme margins
+    market_margin = -spread
+    blended_margin = 0.5 * predicted_margin + 0.5 * market_margin
+    blended_margin = max(-14, min(14, blended_margin))
+    margin_vs_spread = blended_margin - market_margin
 
     if margin_vs_spread > 0:
         pick = home_team
@@ -131,66 +137,39 @@ def predict_game(home_team, away_team, spread, public_pct_home,
     }
 
 # -------------------------
-# WEEK 5 MATCHUPS
+# WEEK 7 MATCHUPS
 # Injury adjustments:
 # home_qb_adj: positive helps home, negative hurts home
 # away_qb_adj: positive helps away, negative hurts away
 # Typical values: starter out = -7 to -9, limited = -3, questionable = -1
 # -------------------------
+
 matchups = [
     # TNF
-    ('Dallas Cowboys', 'Tampa Bay Buccaneers', -8.5, 33.41,
-     0, -7, 0, 0),    # Mayfield OUT
+    ('Chicago Bears', 'New England Patriots', -3.0, 55.57, 0, 0, -1, -2),
 
-    # Sunday London
-    ('Jacksonville Jaguars', 'Philadelphia Eagles', -7.5, 52.04,
-     0, -1, 0, 0),    # Eagles OL retirement
+    # Sunday
+    ('New Orleans Saints', 'Pittsburgh Steelers', 3.5, 55.76, 0, 0, -1, 0),
+    ('Atlanta Falcons', 'San Francisco 49ers', 3.5, 24.92, 0, 0, 0, -3),
+    ('Tennessee Titans', 'Cleveland Browns', 1.5, 26.63, 0, 0, 0, 0),
+    ('Minnesota Vikings', 'Indianapolis Colts', -6.5, 68.29, 0, 0, -1, -1),
+    ('New York Jets', 'Miami Dolphins', -4.5, 69.84, 0, 0, -1, -2),
+    ('Carolina Panthers', 'Tampa Bay Buccaneers', -3.5, 73.23, 0, -2, -2, -2),
+    ('Baltimore Ravens', 'Cincinnati Bengals', -2.5, 35.85, -4, 0, 0, 0),
+    ('Houston Texans', 'New York Giants', -10.0, 34.97, 0, -5, -1, 0),
+    ('Arizona Cardinals', 'Denver Broncos', 4.5, 39.81, 0, 0, 0, 0),
+    ('Detroit Lions', 'Green Bay Packers', -3.0, 55.89, 0, 0, 0, -2),
+    ('Las Vegas Raiders', 'Los Angeles Rams', 4.5, 57.73, 0, 0, 0, -2),
 
-    # Sunday 12pm
-    ('Green Bay Packers', 'Chicago Bears', 2.5, 36.02,
-     0, -9, 0, 0),    # Caleb Williams OUT — massive adjustment
-
-    ('Tennessee Titans', 'Houston Texans', 7.5, 43.35,
-     0, 0, 0, 0),
-
-    ('Miami Dolphins', 'Cincinnati Bengals', 7.5, 30.46,
-     0, 0, 0, 0),
-
-    ('New England Patriots', 'Las Vegas Raiders', -3.5, 46.66,
-     0, 0, 0, 0),
-
-    ('New Orleans Saints', 'Minnesota Vikings', 1.5, 36.17,
-     0, 0, 0, 0),
-
-    ('New York Jets', 'Cleveland Browns', -2.5, 28.33,
-     0, 0, 0, 0),
-
-    ('Pittsburgh Steelers', 'Indianapolis Colts', -2.5, 51.71,
-     0, 0, 0, 0),
-
-    ('Washington Commanders', 'New York Giants', -3.5, 32.67,
-     -3, -5, 0, 0),   # Daniels unknown + Winston starting
-
-    ('Los Angeles Chargers', 'Denver Broncos', 3.5, 34.03,
-     0, 0, 0, 0),
-
-    ('Arizona Cardinals', 'Detroit Lions', 5.5, 33.0,
-     0, 0, 0, 0),
-
-    # Sunday 3:25pm
-    ('Seattle Seahawks', 'San Francisco 49ers', -3.0, 39.0,
-     0, 0, 0, 0),
-
-    ('Atlanta Falcons', 'Baltimore Ravens', -3.5, 56.0,
-     0, -6, 0, 0),    # Lamar leaning out
+    # SNF
+    ('Seattle Seahawks', 'Kansas City Chiefs', -2.5, 33.33, 0, 0, 0, -1),
 
     # MNF
-    ('Los Angeles Rams', 'Buffalo Bills', -3.0, 36.02,
-     0, 0, 0, 0),
+    ('Philadelphia Eagles', 'Dallas Cowboys', 4.5, 34.35, -7, 0, -1, 0),
 ]
 
 print('=' * 65)
-print('NFL WEEK 5 2026 — MODEL PICKS (with injury adjustments)')
+print(f'NFL WEEK {WEEK} {SEASON} — MODEL PICKS (with injury adjustments)')
 print('=' * 65)
 
 results = []
@@ -217,9 +196,27 @@ for m in matchups:
     print(f"  ✅ PICK: {r['pick']} | Confidence: {r['confidence']}%{flag}")
 
 print('\n' + '=' * 65)
-print('SUMMARY — MODEL PICKS WEEK 5')
+print('SUMMARY — MODEL PICKS WEEK 7')
 print('=' * 65)
 for r in results:
     print(f"  {r['pick']}")
+# -------------------------
+# SAVE PICKS TO THE DATABASE
+# -------------------------
+cur = conn.cursor()
+for r in results:
+    cur.execute('''
+        INSERT INTO ModelPicks
+            (week, season, home_team, away_team, spread, model_pick, confidence, result, correct)
+        VALUES (?, ?, ?, ?, ?, ?, ?, 'PENDING', NULL)
+        ON CONFLICT(week, season, home_team, away_team) DO UPDATE SET
+            spread = excluded.spread,
+            model_pick = excluded.model_pick,
+            confidence = excluded.confidence
+        WHERE ModelPicks.result = 'PENDING'
+    ''', (WEEK, SEASON, r['home_team'], r['away_team'],
+          r['spread'], r['pick'], r['confidence']))
+conn.commit()
+print(f'\nSaved {len(results)} picks for Week {WEEK}.')
 
 conn.close()

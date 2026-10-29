@@ -60,6 +60,7 @@ def grade_week(week, season):
     response = requests.get(url)
     data = response.json()
     events = data.get('events', [])
+    
 
     graded = 0
     correct = 0
@@ -90,30 +91,26 @@ def grade_week(week, season):
 
         model_pick, spread = row
 
-        # Grade against spread
-        # spread is from home perspective (negative = home favored)
-        # If home team wins by more than abs(spread) when favored = home covers
-        if spread < 0:  # home team favored
-            home_covered = margin > abs(spread)
-            away_covered = not home_covered
-        else:  # away team favored
-            home_covered = margin > -spread
-            away_covered = not home_covered
+        # spread is from the home team's perspective (negative = home favored)
+        # cover_margin > 0 means home covered, < 0 means away covered, 0 is a push
+        cover_margin = (home_score - away_score) + spread
 
-        if model_pick == home_team:
-            is_correct = 1 if home_covered else 0
+        if cover_margin == 0:
+            result, is_correct = 'PUSH', None
+        elif model_pick == home_team:
+            is_correct = 1 if cover_margin > 0 else 0
+            result = 'WIN' if is_correct else 'LOSS'
         else:
-            is_correct = 1 if away_covered else 0
-
-        result = 'WIN' if is_correct else 'LOSS'
+            is_correct = 1 if cover_margin < 0 else 0
+            result = 'WIN' if is_correct else 'LOSS'
 
         cur.execute('''UPDATE ModelPicks SET result=?, correct=?
             WHERE week=? AND season=? AND home_team=? AND away_team=?''',
             (result, is_correct, week, season, home_team, away_team))
 
-        graded += 1
-        correct += is_correct
-
+        if is_correct is not None:
+            graded += 1
+            correct += is_correct
         print(f"  {away_team} @ {home_team}: {away_score}-{home_score} | Pick: {model_pick} | {result}")
 
     conn.commit()
@@ -158,17 +155,11 @@ if __name__ == '__main__':
     print('=' * 50)
 
     # Grade completed weeks
-    print('\nGrading Week 2...')
-    grade_week(2, 2026)
-
-    print('\nGrading Week 3...')
-    grade_week(3, 2026)
-
-    print('\nGrading Week 4...')
-    grade_week(4, 2026)
-   
-    print('\nGrading Week 5...')
-    grade_week(5, 2026)
+    weeks = [r[0] for r in cur.execute(
+    'SELECT DISTINCT week FROM ModelPicks WHERE season = 2026 ORDER BY week').fetchall()]
+    for wk in weeks:
+     print(f'\nGrading Week {wk}...')
+     grade_week(wk, 2026)
     
     # Show running record
     show_record()

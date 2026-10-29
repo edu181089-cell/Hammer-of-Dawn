@@ -5,7 +5,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 conn = sqlite3.connect(os.path.join(BASE_DIR, 'nfl_pickem.sqlite'))
 cur = conn.cursor()
 
-week5_picks = [
+week6_picks = [
     {'home_team': 'Dallas Cowboys', 'away_team': 'Tampa Bay Buccaneers',
      'spread': -8.5, 'pick': 'Dallas Cowboys', 'confidence': 55.9},
     {'home_team': 'Jacksonville Jaguars', 'away_team': 'Philadelphia Eagles',
@@ -39,11 +39,11 @@ week5_picks = [
 ]
 
 stored = 0
-for pick in week5_picks:
+for pick in week6_picks:
     cur.execute('''INSERT OR IGNORE INTO ModelPicks
         (week, season, home_team, away_team, spread, model_pick, confidence, result, correct)
         VALUES (?,?,?,?,?,?,?,?,?)''',
-        (5, 2026,
+        (6, 2026,
          pick['home_team'],
          pick['away_team'],
          pick['spread'],
